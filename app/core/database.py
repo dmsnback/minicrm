@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr
+from sqlalchemy.orm import DeclarativeBase, Mapped, declared_attr, mapped_column
 
 from app.core.config import settings
 
@@ -13,12 +13,12 @@ class Model(DeclarativeBase):
 
 
 class PreBase(Model):
-    __abstract__ == True # type: ignore
+    __abstract__ = True
 
     @declared_attr
-    def __tablename__(cls)->str:
+    def __tablename__(cls) -> str:
         return cls.__name__.lower()
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
 
 
