@@ -1,6 +1,6 @@
 from fastapi_users import schemas
 
-from app.models.users import UserRole
+from app.users.models import UserRole
 
 
 class UserRead(schemas.BaseUser[int]):

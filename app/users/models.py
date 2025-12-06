@@ -4,15 +4,14 @@ from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.database import Model
-
 
 class UserRole(str, enum.Enum):
     user = "user"
     admin = "admin"
 
 
-class User(SQLAlchemyBaseUserTable[int], Model):
+class User(SQLAlchemyBaseUserTable[int]):
+    __tablename__ = "user"
 
     username: Mapped[str] = mapped_column(nullable=False)
     first_name: Mapped[str | None] = mapped_column(nullable=True)
