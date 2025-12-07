@@ -1,10 +1,22 @@
+from contextlib import asynccontextmanager
+
 import uvicorn
 from fastapi import FastAPI
 
 from app.core.config import settings
 from app.routers.users import user_router
 
-app = FastAPI(title=settings.app_title)
+from app.core.init_db import create_first_superuser
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await create_first_superuser()
+    print('SuperUser создан или уже существует')
+    yield
+
+
+app = FastAPI(title=settings.app_title, lifespan=lifespan)
 
 app.include_router(user_router)
 

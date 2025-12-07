@@ -8,11 +8,11 @@ engine = create_async_engine(settings.database_url, echo=True)
 sync_session = async_sessionmaker(engine, expire_on_commit=False)
 
 
-class Model(DeclarativeBase):
+class Base(DeclarativeBase):
     pass
 
 
-class PreBase(Model):
+class PreBase(Base):
     __abstract__ = True
 
     @declared_attr
@@ -23,5 +23,5 @@ class PreBase(Model):
 
 
 async def get_session():
-    async with sync_session as session:
+    async with sync_session() as session:
         yield session
