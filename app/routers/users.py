@@ -6,7 +6,6 @@ from app.users.manager import auth_backend, fastapi_users
 from app.users.schemas import UserCreate, UserRead, UserUpdate
 
 user_router = APIRouter(
-    prefix="/users",
     tags=["Пользователи"],
 )
 
@@ -19,5 +18,6 @@ user_router.include_router(
     prefix="/auth",
 )
 user_router.include_router(
-    fastapi_users.get_users_router(UserRead, Annotated[UserUpdate, Depends()])
+    fastapi_users.get_users_router(UserRead, Annotated[UserUpdate, Depends()]),
+    prefix="/users",
 )
