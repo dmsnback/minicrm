@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     first_superuser_username: str | None = None
     first_superuser_email: str | None = None
     first_superuser_password: str | None = None
+    first_superuser_role: str | None = None
 
     class Config:
         env_file = ".env"
