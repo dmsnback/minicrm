@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, declared_attr, mapped_column
+from sqlalchemy.orm import DeclarativeBase
 
 from app.core.config import settings
 
@@ -10,16 +10,6 @@ sync_session = async_sessionmaker(engine, expire_on_commit=False)
 
 class Base(DeclarativeBase):
     pass
-
-
-class PreBase(Base):
-    __abstract__ = True
-
-    @declared_attr
-    def __tablename__(cls) -> str:
-        return cls.__name__.lower()
-
-    id: Mapped[int] = mapped_column(primary_key=True)
 
 
 async def get_session():

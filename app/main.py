@@ -1,15 +1,13 @@
-from contextlib import asynccontextmanager
 import logging
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
 
 from app.core.config import settings
-from app.routers.users import user_router
-
 from app.core.init_db import create_first_superuser
 from app.core.logging import setup_logging
-
+from app.routers.users import user_router
 
 setup_logging()
 
