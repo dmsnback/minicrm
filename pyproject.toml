@@ -14,5 +14,5 @@ profile = "black"
 line_length = 90
 multi_line_output = 3
 skip_gitignore = true
-skip_glob = ["**/migrations/*", "**/settings/*"]
+skip_glob = ["**/alembic/*"]
 src_paths = ["app"]

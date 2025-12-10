@@ -1,10 +1,14 @@
 import enum
+from typing import TYPE_CHECKING
 
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import Enum
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
+
+if TYPE_CHECKING:
+    from app.models.clients import Client
 
 
 class UserRole(str, enum.Enum):
@@ -23,3 +27,4 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     role: Mapped[UserRole] = mapped_column(
         Enum(UserRole), default=UserRole.user, nullable=False
     )
+    clients: Mapped[list["Client"]] = relationship(back_populates="manager")
