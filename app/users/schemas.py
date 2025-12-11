@@ -11,6 +11,7 @@ class UserRead(schemas.BaseUser[int]):
     last_name: str | None = None
     phone: int | None = None
     role: UserRole
+    clients: list | None = None
 
 
 class UserCreate(schemas.BaseUserCreate):
@@ -20,6 +21,7 @@ class UserCreate(schemas.BaseUserCreate):
     last_name: str | None = None
     phone: int | None = None
     role: UserRole = UserRole.user
+    clients: list | None = None
 
 
 class UserUpdate(schemas.BaseUserUpdate):
@@ -29,3 +31,4 @@ class UserUpdate(schemas.BaseUserUpdate):
     last_name: str | None = None
     phone: int | None = None
     role: UserRole = UserRole.user
+    clients: list | None = None

@@ -13,7 +13,7 @@ class Client(Base):
     __tablename__ = "clients"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    full_name: Mapped[str | None] = mapped_column(String(255))
+    full_name: Mapped[str] = mapped_column(String(255))
     email: Mapped[str | None] = mapped_column(String(255), nullable=True)
     phone: Mapped[str | None] = mapped_column(String(255), nullable=True)
     manager_id: Mapped[int | None] = mapped_column(
