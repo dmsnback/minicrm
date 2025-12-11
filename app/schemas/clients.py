@@ -24,7 +24,7 @@ class ClientCreateSchema(ClientBaseSchema):
 
 class ClientUpdateSchema(BaseModel):
 
-    full_name: str | None = None
+    full_name: str
     email: EmailStr | None = None
     phone: str | None = None
     manager_id: int | None = None
