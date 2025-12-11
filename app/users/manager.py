@@ -10,13 +10,16 @@ from fastapi_users.authentication import (
     BearerTransport,
     JWTStrategy,
 )
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 
 from app.core.config import settings
 from app.users.models import User
 from app.users.schemas import UserCreate
-from app.users.utils import get_user_db
+from app.core.database import get_session
 
-bearer_tramsport = BearerTransport(tokenUrl="auth/jwt/login")
+bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 
 def get_jwt_strategy() -> JWTStrategy:
@@ -24,7 +27,7 @@ def get_jwt_strategy() -> JWTStrategy:
 
 
 auth_backend = AuthenticationBackend(
-    name="jwt", transport=bearer_tramsport, get_strategy=get_jwt_strategy
+    name="jwt", transport=bearer_transport, get_strategy=get_jwt_strategy
 )
 
 
@@ -41,6 +44,10 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
     async def on_after_register(self, user: User, request: Request | None):
         print(f"Пользователь {user.username} зарегистрирован")
+
+
+async def get_user_db(session: AsyncSession = Depends(get_session)):
+    yield SQLAlchemyUserDatabase(session, User)
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):

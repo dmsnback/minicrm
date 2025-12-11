@@ -9,7 +9,7 @@ from app.core.config import settings
 from app.core.database import get_session
 from app.users.manager import get_user_manager
 from app.users.schemas import UserCreate
-from app.users.utils import get_user_db
+from app.users.manager import get_user_db
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ async def create_user(
     email: EmailStr,
     password: str,
     is_superuser: bool = False,
-    role: Literal["admin", "user"] = "user",
+    role: Literal["admin", "manager"] = "manager",
 ):
     try:
         async with get_session_context() as session:

@@ -3,6 +3,7 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.clients import Client
 from app.schemas.clients import ClientCreateSchema, ClientUpdateSchema
@@ -11,9 +12,12 @@ logger = logging.getLogger(__name__)
 
 
 class CRUDClient:
-    async def get_all_clients(self, session: AsyncSession):
+
+    async def get_all_clients(self, session: AsyncSession, user):
         try:
-            query = select(Client)
+            query = select(Client).options(selectinload(Client.manager))
+            if user.role == "manager":
+                query = query.where(Client.manager_id == user.id)
             result = await session.execute(query)
             clients = result.scalars().all()
             logger.info("Получен список клиентов")
@@ -24,7 +28,7 @@ class CRUDClient:
 
     async def get_client(self, client_id: int, session: AsyncSession):
         try:
-            query = select(Client).where(Client.id == client_id)
+            query = select(Client).where(Client.id == client_id).options(selectinload(Client.manager))
             result = await session.execute(query)
             client = result.scalars().first()
             if client:
