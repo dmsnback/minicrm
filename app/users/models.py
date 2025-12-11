@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class UserRole(str, enum.Enum):
-    user = "user"
+    manager = "manager"
     admin = "admin"
 
 
@@ -25,6 +25,6 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     last_name: Mapped[str | None] = mapped_column(nullable=True)
     phone: Mapped[int | None] = mapped_column(nullable=True)
     role: Mapped[UserRole] = mapped_column(
-        Enum(UserRole), default=UserRole.user, nullable=False
+        Enum(UserRole), default=UserRole.manager, nullable=False
     )
-    clients: Mapped[list["Client"]] = relationship(back_populates="manager")
+    clients: Mapped[list["Client"] | None] = relationship(back_populates="manager", lazy="selectin")

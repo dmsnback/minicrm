@@ -20,7 +20,7 @@ class UserCreate(schemas.BaseUserCreate):
     first_name: str | None = None
     last_name: str | None = None
     phone: int | None = None
-    role: UserRole = UserRole.user
+    role: UserRole = UserRole.manager
     clients: list | None = None
 
 
@@ -30,5 +30,5 @@ class UserUpdate(schemas.BaseUserUpdate):
     first_name: str | None = None
     last_name: str | None = None
     phone: int | None = None
-    role: UserRole = UserRole.user
+    role: UserRole = UserRole.manager
     clients: list | None = None

@@ -6,6 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_session
 from app.crud.clients import CRUDClient
 from app.schemas.clients import ClientCreateSchema, ClientReadSchema, ClientUpdateSchema
+from app.users.models import User
+from app.users.manager import current_user
 
 client_router = APIRouter(
     prefix="/clients",
@@ -19,8 +21,11 @@ crud = CRUDClient()
 @client_router.get("/all")
 async def get_all_clients(
     session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(current_user)
 ) -> list[ClientReadSchema]:
-    clients = await crud.get_all_clients(session)
+    clients = await crud.get_all_clients(session, current_user)
+    if not clients:
+        raise HTTPException(404, "Нет ниодного клиента")
     return clients
 
 
@@ -69,6 +74,6 @@ async def delete_cliennt(client_id: int, session: AsyncSession = Depends(get_ses
         raise HTTPException(404, "Клиент не найден")
     try:
         await crud.delete_client(client, session)
-        return {"message": "Клиент удалён"}
+        return {"detail": "Клиент удалён"}
     except Exception:
         raise HTTPException(500, "Ошибка при удалении клиента")
