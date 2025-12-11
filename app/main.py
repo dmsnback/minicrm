@@ -7,9 +7,8 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.core.init_db import create_first_superuser
 from app.core.logging import setup_logging
-from app.routers.users import user_router
 from app.routers.clients import client_router
-
+from app.routers.users import user_router
 
 setup_logging()
 
