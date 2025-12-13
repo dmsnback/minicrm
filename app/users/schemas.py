@@ -1,6 +1,8 @@
 from fastapi_users import schemas
+from pydantic import ConfigDict
 
 from app.users.models import UserRole
+from app.schemas.clients import ClientReadSchema
 
 
 class UserRead(schemas.BaseUser[int]):
@@ -11,7 +13,9 @@ class UserRead(schemas.BaseUser[int]):
     last_name: str | None = None
     phone: int | None = None
     role: UserRole
-    clients: list | None = None
+    clients: list[ClientReadSchema] | None = None
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserCreate(schemas.BaseUserCreate):

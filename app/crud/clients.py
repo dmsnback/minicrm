@@ -7,6 +7,7 @@ from sqlalchemy.orm import selectinload
 
 from app.models.clients import Client
 from app.schemas.clients import ClientCreateSchema, ClientUpdateSchema
+from app.validators.client import validate_unique_email_client, validate_unique_phone_client, validate_unique_full_name_client
 
 logger = logging.getLogger(__name__)
 
@@ -26,9 +27,11 @@ class CRUDClient:
             logger.error(f"Ошибка приполучении списка клиентов: {e}")
             raise
 
-    async def get_client(self, client_id: int, session: AsyncSession):
+    async def get_client(self, client_id: int, session: AsyncSession, user):
         try:
             query = select(Client).where(Client.id == client_id).options(selectinload(Client.manager))
+            if user.role == "manager":
+                query = query.where(Client.manager_id == user.id)
             result = await session.execute(query)
             client = result.scalars().first()
             if client:
@@ -42,6 +45,12 @@ class CRUDClient:
 
     async def create_client(self, data: ClientCreateSchema, session: AsyncSession):
         try:
+            if data.email:
+                await validate_unique_email_client(session, data.email)
+            if data.phone:
+                await validate_unique_phone_client(session, data.phone)
+            if data.full_name:
+                await validate_unique_full_name_client(session, data.full_name)
             new_client = Client(**data.model_dump())
             session.add(new_client)
             await session.flush()
@@ -53,7 +62,7 @@ class CRUDClient:
             raise
 
     async def update_client(
-        self, client: Client, data: ClientUpdateSchema, session: AsyncSession
+        self, client: Client, data: ClientUpdateSchema, session: AsyncSession,
     ):
         try:
             update_data = data.model_dump(exclude_unset=True)
