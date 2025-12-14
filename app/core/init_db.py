@@ -7,9 +7,8 @@ from pydantic import EmailStr
 
 from app.core.config import settings
 from app.core.database import get_session
-from app.users.manager import get_user_manager
+from app.users.manager import get_user_db, get_user_manager
 from app.users.schemas import UserCreate
-from app.users.manager import get_user_db
 
 logger = logging.getLogger(__name__)
 

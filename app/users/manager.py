@@ -10,14 +10,13 @@ from fastapi_users.authentication import (
     BearerTransport,
     JWTStrategy,
 )
+from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-
 from app.core.config import settings
+from app.core.database import get_session
 from app.users.models import User
 from app.users.schemas import UserCreate
-from app.core.database import get_session
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 

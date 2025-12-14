@@ -7,7 +7,11 @@ from sqlalchemy.orm import selectinload
 
 from app.models.clients import Client
 from app.schemas.clients import ClientCreateSchema, ClientUpdateSchema
-from app.validators.client import validate_unique_email_client, validate_unique_phone_client, validate_unique_full_name_client
+from app.validators.clients import (
+    validate_unique_email_client,
+    validate_unique_full_name_client,
+    validate_unique_phone_client,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +33,11 @@ class CRUDClient:
 
     async def get_client(self, client_id: int, session: AsyncSession, user):
         try:
-            query = select(Client).where(Client.id == client_id).options(selectinload(Client.manager))
+            query = (
+                select(Client)
+                .where(Client.id == client_id)
+                .options(selectinload(Client.manager))
+            )
             if user.role == "manager":
                 query = query.where(Client.manager_id == user.id)
             result = await session.execute(query)
@@ -62,7 +70,10 @@ class CRUDClient:
             raise
 
     async def update_client(
-        self, client: Client, data: ClientUpdateSchema, session: AsyncSession,
+        self,
+        client: Client,
+        data: ClientUpdateSchema,
+        session: AsyncSession,
     ):
         try:
             update_data = data.model_dump(exclude_unset=True)

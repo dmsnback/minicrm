@@ -23,7 +23,7 @@ class CRUDUser:
             query = select(User).options(selectinload(User.clients))
             result = await session.execute(query)
             users = result.scalars().all()
-            logger.info('Получен список пользователей')
+            logger.info("Получен список пользователей")
             return users
         except SQLAlchemyError as e:
             logger.error(f"Ошибка приполучении списка пользователей: {e}")
@@ -31,7 +31,11 @@ class CRUDUser:
 
     async def get_all_user_clients(self, session: AsyncSession, user_id):
         try:
-            query = select(Client).where(Client.manager_id == user_id).options(selectinload(Client.manager))
+            query = (
+                select(Client)
+                .where(Client.manager_id == user_id)
+                .options(selectinload(Client.manager))
+            )
             result = await session.execute(query)
             clients = result.scalars().all()
             logger.info("Получен список клиентов менеджера")

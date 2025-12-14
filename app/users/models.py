@@ -9,6 +9,7 @@ from app.core.database import Base
 
 if TYPE_CHECKING:
     from app.models.clients import Client
+    from app.models.deals import Deal
 
 
 class UserRole(str, enum.Enum):
@@ -27,4 +28,9 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     role: Mapped[UserRole] = mapped_column(
         Enum(UserRole), default=UserRole.manager, nullable=False
     )
-    clients: Mapped[list["Client"] | None] = relationship(back_populates="manager", lazy="selectin")
+    clients: Mapped[list["Client"] | None] = relationship(
+        back_populates="manager", lazy="selectin"
+    )
+    deals: Mapped[list["Deal"] | None] = relationship(
+        back_populates="mannager", lazy="selectin"
+    )
