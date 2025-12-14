@@ -1,8 +1,8 @@
 from fastapi_users import schemas
 from pydantic import ConfigDict
 
-from app.users.models import UserRole
 from app.schemas.clients import ClientReadSchema
+from app.users.models import UserRole
 
 
 class UserRead(schemas.BaseUser[int]):

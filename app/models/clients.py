@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 if TYPE_CHECKING:
+    from app.models.deals import Deal
     from app.users.models import User
 
 
@@ -24,3 +25,4 @@ class Client(Base):
         nullable=True,
     )
     manager: Mapped["User"] = relationship(back_populates="clients")
+    deals: Mapped["Deal"] = relationship(back_populates="deals", lazy="selectin")
