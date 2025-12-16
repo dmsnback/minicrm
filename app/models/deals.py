@@ -9,6 +9,7 @@ from app.core.database import Base
 
 if TYPE_CHECKING:
     from app.models.clients import Client
+    from app.models.comments import Comment
     from app.users.models import User
 
 
@@ -46,3 +47,6 @@ class Deal(Base):
         ForeignKey("clients.id", ondelete="CASCADE"), nullable=False
     )
     client: Mapped["Client"] = relationship(back_populates="deals", lazy="selectin")
+    comments: Mapped[list["Comment"]] = relationship(
+        back_populates="deal", lazy="selectin", cascade="all, delete-orphan"
+    )
