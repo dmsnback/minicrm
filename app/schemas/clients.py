@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class ManagerShortSchema(BaseModel):
@@ -12,7 +12,7 @@ class ManagerShortSchema(BaseModel):
 
 
 class ClientBaseSchema(BaseModel):
-    full_name: str
+    full_name: str = Field(..., description="Полное имя клиента")
     email: EmailStr | None = None
     phone: str | None = None
     manager_id: int | None = None
@@ -23,8 +23,7 @@ class ClientCreateSchema(ClientBaseSchema):
 
 
 class ClientUpdateSchema(BaseModel):
-
-    full_name: str
+    full_name: str | None = None
     email: EmailStr | None = None
     phone: str | None = None
     manager_id: int | None = None

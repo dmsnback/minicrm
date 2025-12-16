@@ -32,5 +32,5 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         back_populates="manager", lazy="selectin"
     )
     deals: Mapped[list["Deal"] | None] = relationship(
-        back_populates="mannager", lazy="selectin"
+        back_populates="manager", lazy="selectin"
     )

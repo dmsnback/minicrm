@@ -24,5 +24,5 @@ class Client(Base):
         ),
         nullable=True,
     )
-    manager: Mapped["User"] = relationship(back_populates="clients")
-    deals: Mapped["Deal"] = relationship(back_populates="deals", lazy="selectin")
+    manager: Mapped["User"] = relationship(back_populates="clients", lazy="selectin")
+    deals: Mapped[list["Deal"]] = relationship(back_populates="client", lazy="selectin")
