@@ -7,6 +7,7 @@ from sqlalchemy.orm import selectinload
 
 from app.models.clients import Client
 from app.schemas.clients import ClientCreateSchema, ClientUpdateSchema
+from app.users.models import User
 from app.validators.clients import (
     validate_unique_email_client,
     validate_unique_full_name_client,
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class CRUDClient:
 
-    async def get_all_clients(self, session: AsyncSession, user):
+    async def get_all_clients(self, session: AsyncSession, user: User):
         try:
             query = select(Client).options(selectinload(Client.manager))
             if user.role == "manager":
@@ -31,7 +32,7 @@ class CRUDClient:
             logger.error(f"Ошибка приполучении списка клиентов: {e}")
             raise
 
-    async def get_client(self, client_id: int, session: AsyncSession, user):
+    async def get_client(self, client_id: int, session: AsyncSession, user: User):
         try:
             query = (
                 select(Client)

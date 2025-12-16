@@ -1,5 +1,3 @@
-from typing import Annotated
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,29 +13,32 @@ client_router = APIRouter(
         "Клиенты",
     ],
 )
-crud = CRUDClient()
+crud_client = CRUDClient()
 
 
-@client_router.get("/all", dependencies=[Depends(current_user)])
+@client_router.get(
+    "/all",
+    response_model=list[ClientReadSchema],
+    summary="Получение списка всех клиентов",
+    description="Администратор видит всех клиентов, менеджер только своих",
+)
 async def get_all_clients(
     session: AsyncSession = Depends(get_session),
     current_user: User = Depends(current_user),
 ) -> list[ClientReadSchema]:
-    clients = await crud.get_all_clients(session, current_user)
-    if not clients:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Нет ниодного клиента"
-        )
+    clients = await crud_client.get_all_clients(session, current_user)
     return clients
 
 
-@client_router.get("/{client_id}", dependencies=[Depends(current_user)])
+@client_router.get(
+    "/{client_id}", response_model=ClientReadSchema, summary="Получение клиента по id"
+)
 async def get_client(
     client_id: int,
     session: AsyncSession = Depends(get_session),
     current_user: User = Depends(current_user),
 ) -> ClientReadSchema:
-    client = await crud.get_client(client_id, session, current_user)
+    client = await crud_client.get_client(client_id, session, current_user)
     if not client:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Клиент не найден"
@@ -45,36 +46,42 @@ async def get_client(
     return client
 
 
-@client_router.post("", dependencies=[Depends(current_user)])
+@client_router.post(
+    "",
+    response_model=ClientReadSchema,
+    dependencies=[Depends(current_user)],
+    summary="Добавление клиента",
+)
 async def create_client(
-    data: Annotated[ClientCreateSchema, Depends()],
+    data: ClientCreateSchema,
     session: AsyncSession = Depends(get_session),
-) -> ClientCreateSchema:
+) -> ClientReadSchema:
     try:
-        client = await crud.create_client(data, session)
+        client = await crud_client.create_client(data, session)
         return client
     except Exception as e:
         raise e
-    except Exception:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Ошибка при добавлении клиента",
-        )
 
 
-@client_router.patch("/{client_id}", dependencies=[Depends(current_user)])
+@client_router.patch(
+    "/{client_id}",
+    response_model=ClientReadSchema,
+    summary="Обновление клиента",
+    description="Передавайте только те поля, которые нужно изменить",
+)
 async def update_client(
     client_id: int,
-    data: Annotated[ClientUpdateSchema, Depends()],
+    data: ClientUpdateSchema,
     session: AsyncSession = Depends(get_session),
+    user: User = Depends(current_user),
 ) -> ClientReadSchema:
-    client = await crud.get_client(client_id, session, current_user)
+    client = await crud_client.get_client(client_id, session, user)
     if not client:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Клиент не найден"
         )
     try:
-        upd_client = await crud.update_client(client, data, session)
+        upd_client = await crud_client.update_client(client, data, session)
         return upd_client
     except Exception:
         raise HTTPException(
@@ -82,19 +89,23 @@ async def update_client(
         )
 
 
-@client_router.delete("/{client_id}", dependencies=[Depends(current_superuser)])
-async def delete_cliennt(
+@client_router.delete(
+    "/{client_id}",
+    summary="Удаление клиента",
+    description="Доступно только администратору",
+)
+async def delete_client(
     client_id: int,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(current_superuser),
-):
-    client = await crud.get_client(client_id, session, user)
+) -> dict:
+    client = await crud_client.get_client(client_id, session, user)
     if not client:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Клиент не найден"
         )
     try:
-        await crud.delete_client(client, session)
+        await crud_client.delete_client(client, session)
         return {"detail": "Клиент удалён"}
     except Exception:
         raise HTTPException(

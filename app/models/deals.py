@@ -41,8 +41,8 @@ class Deal(Base):
     manager_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
-    manager: Mapped["User"] = relationship(back_populates="deals")
+    manager: Mapped["User"] = relationship(back_populates="deals", lazy="selectin")
     client_id: Mapped[int] = mapped_column(
         ForeignKey("clients.id", ondelete="CASCADE"), nullable=False
     )
-    client: Mapped["Client"] = relationship(back_populates="deals")
+    client: Mapped["Client"] = relationship(back_populates="deals", lazy="selectin")

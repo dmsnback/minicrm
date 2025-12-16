@@ -14,13 +14,25 @@ user_router = APIRouter(
 crud = CRUDUser()
 
 
-@user_router.get("/users/all", dependencies=[Depends(current_superuser)])
+@user_router.get(
+    "/users/all",
+    response_model=list[UserRead],
+    dependencies=[Depends(current_superuser)],
+    summary="Получение списка всех пользователей",
+    description="Доступно только администтратору",
+)
 async def get_all_users(session: AsyncSession = Depends(get_session)) -> list[UserRead]:
     users = await crud.get_all_users(session)
     return users
 
 
-@user_router.get("/users/{user_id}/clients", dependencies=[Depends(current_superuser)])
+@user_router.get(
+    "/users/{user_id}/clients",
+    response_model=list[ClientReadSchema],
+    dependencies=[Depends(current_superuser)],
+    summary="Получение списка клиентов у конкретного пользователя",
+    description="Доступно только Администратору",
+)
 async def get_all_user_clients(
     user_id: int, session: AsyncSession = Depends(get_session)
 ) -> list[ClientReadSchema]:
