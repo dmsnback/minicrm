@@ -29,7 +29,7 @@ class Comment(Base):
         ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
     author: Mapped["User"] = relationship(back_populates="comments", lazy="selectin")
-    delal_id: Mapped[int] = mapped_column(
+    deal_id: Mapped[int] = mapped_column(
         ForeignKey("deals.id", ondelete="CASCADE"), nullable=False
     )
     deal: Mapped["Deal"] = relationship(back_populates="comments", lazy="selectin")

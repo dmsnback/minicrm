@@ -9,6 +9,7 @@ from app.core.database import Base
 
 if TYPE_CHECKING:
     from app.models.clients import Client
+    from app.models.comments import Comment
     from app.models.deals import Deal
 
 
@@ -33,4 +34,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     )
     deals: Mapped[list["Deal"] | None] = relationship(
         back_populates="manager", lazy="selectin"
+    )
+    comments: Mapped[list["Comment"] | None] = relationship(
+        back_populates="author", lazy="selectin"
     )

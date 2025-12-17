@@ -5,6 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.models.comments import Comment
 from app.models.deals import Deal
 from app.schemas.deals import DealCreateSchema, DealUpdateSchema
 from app.users.models import User
@@ -16,7 +17,9 @@ class CRUDDeal:
 
     async def get_all_deals(self, session: AsyncSession, user: User):
         try:
-            query = select(Deal).options(selectinload(Deal.manager))
+            query = select(Deal).options(
+                selectinload(Deal.manager), selectinload(Deal.comments)
+            )
             if user.role == "manager":
                 query = query.where(Deal.manager_id == user.id)
             result = await session.execute(query)
@@ -30,7 +33,13 @@ class CRUDDeal:
     async def get_deal(self, deal_id: int, session: AsyncSession, user: User):
         try:
             query = (
-                select(Deal).where(Deal.id == deal_id).options(selectinload(Deal.manager))
+                select(Deal)
+                .where(Deal.id == deal_id)
+                .options(
+                    selectinload(Deal.manager),
+                    selectinload(Deal.client),
+                    selectinload(Deal.comments).selectinload(Comment.author),
+                )
             )
             if user.role == "manager":
                 query = query.where(Deal.manager_id == user.id)
@@ -39,7 +48,7 @@ class CRUDDeal:
             if deal:
                 logger.info(f"Получена сделка id = {deal_id}")
             else:
-                logger.warning(f"сделка id = {deal_id} не найдена")
+                logger.warning(f"Сделка id = {deal_id} не найдена")
             return deal
         except SQLAlchemyError as e:
             logger.error(f"Ошибка приполучении сделки: {e}")
@@ -51,6 +60,14 @@ class CRUDDeal:
             session.add(new_deal)
             await session.flush()
             await session.commit()
+            await session.refresh(
+                new_deal,
+                attribute_names=[
+                    "manager",
+                    "client",
+                    "comment",
+                ],
+            )
             logger.info(f"Создана сделка {new_deal.name} id={new_deal.id}")
             return new_deal
         except SQLAlchemyError as e:
