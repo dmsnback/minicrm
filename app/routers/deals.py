@@ -28,10 +28,6 @@ async def get_all_deals(
     current_user: User = Depends(current_user),
 ) -> list[DealReadSchema]:
     deals = await crud_deal.get_all_deals(session, current_user)
-    if not deals:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Нет ниодной сделки"
-        )
     return deals
 
 

@@ -25,7 +25,6 @@ class UserCreate(schemas.BaseUserCreate):
     last_name: str | None = None
     phone: int | None = None
     role: UserRole = UserRole.manager
-    clients: list | None = None
 
 
 class UserUpdate(schemas.BaseUserUpdate):

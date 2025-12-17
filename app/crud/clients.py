@@ -64,6 +64,7 @@ class CRUDClient:
             session.add(new_client)
             await session.flush()
             await session.commit()
+            await session.refresh(new_client, attribute_names=["manager"])
             logger.info(f"Создан клиент {new_client.full_name} id={new_client.id}")
             return new_client
         except SQLAlchemyError as e:
