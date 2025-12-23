@@ -88,7 +88,7 @@ class CRUDDeal:
             logger.info(f"Сделка id={deal.id} изменена")
             return deal
         except SQLAlchemyError as e:
-            logger.info(f"Ошибка при изменении сделки id={deal.id}: {e}")
+            logger.error(f"Ошибка при изменении сделки id={deal.id}: {e}")
             raise
 
     async def delete_deal(self, deal: Deal, session: AsyncSession):

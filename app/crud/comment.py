@@ -7,7 +7,7 @@ from sqlalchemy.orm import selectinload
 
 from app.models.comments import Comment
 from app.models.deals import Deal
-from app.schemas.comments import CommentCreateSchema
+from app.schemas.comments import CommentCreateSchema, CommentUpdateSchema
 from app.users.models import User, UserRole
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ class CRUDComment:
             raise
 
     async def create_comment(
-        self, deal_id, data: CommentCreateSchema, session: AsyncSession, user: User
+        self, deal_id: int, data: CommentCreateSchema, session: AsyncSession, user: User
     ):
         try:
             if user.role not in (UserRole.manager, UserRole.admin):
@@ -61,8 +61,36 @@ class CRUDComment:
             logger.error(f"Ошибка при добавлении комментария: {e}")
             raise
 
-    async def update_comment():
-        pass
+    async def update_comment(
+            self, comment_id: int, data: CommentUpdateSchema, session: AsyncSession, user: User
+    ):
+        try:
+            comment = await session.get(Comment, comment_id)
+            if not comment:
+                raise ValueError("Комментарий не найден")
+            if comment.author_id != user.id:
+                raise PermissionError("Нельзя редактировать чужой комментарий")
+            comment.text = data.text
+            await session.commit()
+            await session.refresh(comment)
+            logger.info(f"Комментарий id = {comment_id} изменён")
+            return comment
+        except SQLAlchemyError as e:
+            logger.error(f"Ошибка при изменении комментария id={comment_id}: {e}")
+            raise
 
-    async def delete_comment():
-        pass
+    async def delete_comment(
+            self, comment_id: int, session: AsyncSession, user: User
+    ):
+        try:
+            comment = await session.get(Comment, comment_id)
+            if not comment:
+                raise ValueError("Комментарий не найден")
+            if user.role != UserRole.admin:
+                raise PermissionError("Удалять комментарии может только администратор")
+            await session.delete(comment)
+            await session.commit()
+            logger.info(f"Комментарий id={comment_id} удалён")
+        except SQLAlchemyError as e:
+            logger.error(f"Ошибка при удалении комментария id={comment_id}: {e}")
+            raise
