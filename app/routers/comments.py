@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
 from app.crud.comment import CRUDComment
 from app.schemas.comments import (
     CommentCreateSchema,
+    CommentUpdateSchema,
     CommentReadSchema
 )
 from app.users.manager import current_superuser, current_user
@@ -51,20 +52,51 @@ async def create_comment(
 
 
 @comment_router.patch(
-    "",
+    "/{comment_id}",
     response_model=CommentReadSchema,
-    dependencies=[Depends(current_user)],
     summary="Измеенеение ккомментария",
 )
-async def update_comment() -> CommentReadSchema:
-    pass
+async def update_comment(
+    deal_id: int,
+    comment_id: int,
+    data: CommentUpdateSchema,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(current_user)
+) -> CommentReadSchema:
+    try:
+        comment = await comment_crud.update_comment(
+            comment_id, data, session, user
+        )
+        return comment
+    except ValueError as e:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND, detail=f"{e}"
+        )
+    except PermissionError as e:
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN, detail=f"{e}"
+        )
 
 
 @comment_router.delete(
-    "",
-    dependencies=[Depends(current_superuser)],
+    "/{comment_id}",
     summary="Удаление ккомментария",
     description="Доступно только администратору",
 )
-async def delete_commennt() -> dict:
-    pass
+async def delete_commennt(
+    deal_id: int,
+    comment_id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(current_superuser)
+) -> dict:
+    try:
+        await comment_crud.delete_comment(comment_id, session, user)
+        return {"detail": "Комментарий удалён"}
+    except ValueError as e:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND, detail=f"{e}"
+        )
+    except PermissionError as e:
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN, detail=f"{e}"
+        )
