@@ -11,7 +11,7 @@ class UserRead(schemas.BaseUser[int]):
     username: str
     first_name: str | None = None
     last_name: str | None = None
-    phone: int | None = None
+    phone: str | None = None
     role: UserRole
     clients: list[ClientReadSchema] | None = None
 
@@ -23,7 +23,7 @@ class UserCreate(schemas.BaseUserCreate):
     username: str
     first_name: str | None = None
     last_name: str | None = None
-    phone: int | None = None
+    phone: str | None = None
     role: UserRole = UserRole.manager
 
 
@@ -32,6 +32,6 @@ class UserUpdate(schemas.BaseUserUpdate):
     username: str
     first_name: str | None = None
     last_name: str | None = None
-    phone: int | None = None
+    phone: str | None = None
     role: UserRole = UserRole.manager
     clients: list | None = None
