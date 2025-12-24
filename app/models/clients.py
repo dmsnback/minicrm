@@ -15,8 +15,8 @@ class Client(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     full_name: Mapped[str] = mapped_column(String(255))
-    email: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    phone: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    email: Mapped[str | None] = mapped_column(String(255), nullable=True, unique=True)
+    phone: Mapped[str | None] = mapped_column(String(255), nullable=True, unique=True)
     manager_id: Mapped[int | None] = mapped_column(
         ForeignKey(
             "users.id",

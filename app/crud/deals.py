@@ -65,7 +65,7 @@ class CRUDDeal:
                 attribute_names=[
                     "manager",
                     "client",
-                    "comment",
+                    "comments",
                 ],
             )
             logger.info(f"Создана сделка {new_deal.name} id={new_deal.id}")

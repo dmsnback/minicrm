@@ -23,11 +23,11 @@ class StatusDeal(str, enum.Enum):
 class Deal(Base):
     __tablename__ = "deals"
 
-    id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str | None] = mapped_column(String, nullable=True)
     status: Mapped[StatusDeal] = mapped_column(
-        Enum(StatusDeal), default=StatusDeal.new, nullable=False
+        Enum(StatusDeal, name="status_deal_enum"), default=StatusDeal.new, nullable=False
     )
     price: Mapped[float] = mapped_column(Float, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
