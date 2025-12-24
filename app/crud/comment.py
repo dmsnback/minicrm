@@ -62,7 +62,11 @@ class CRUDComment:
             raise
 
     async def update_comment(
-            self, comment_id: int, data: CommentUpdateSchema, session: AsyncSession, user: User
+        self,
+        comment_id: int,
+        data: CommentUpdateSchema,
+        session: AsyncSession,
+        user: User,
     ):
         try:
             comment = await session.get(Comment, comment_id)
@@ -79,9 +83,7 @@ class CRUDComment:
             logger.error(f"Ошибка при изменении комментария id={comment_id}: {e}")
             raise
 
-    async def delete_comment(
-            self, comment_id: int, session: AsyncSession, user: User
-    ):
+    async def delete_comment(self, comment_id: int, session: AsyncSession, user: User):
         try:
             comment = await session.get(Comment, comment_id)
             if not comment:
