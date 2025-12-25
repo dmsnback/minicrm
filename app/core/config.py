@@ -11,8 +11,10 @@ class Settings(BaseSettings):
     first_superuser_password: str | None = None
     first_superuser_role: str | None = None
 
-    class Config:
-        env_file = ".env"
+    model_config = {
+        "env_file": ".env",
+        "extra": "ignore",
+    }
 
 
 settings = Settings()
