@@ -10,7 +10,7 @@ services:
     env_file:
       - ./.env
   backend:
-    image: dmsn/minicrm:latest
+    image: dmsn/minicrm:${{IMAGE_TAG}}
     restart: always
     depends_on:
       - db
