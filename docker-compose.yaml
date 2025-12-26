@@ -10,7 +10,7 @@ services:
     env_file:
       - ./.env
   backend:
-    build: .
+    image: dmsn/minicrm:latest
     restart: always
     depends_on:
       - db
