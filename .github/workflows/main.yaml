@@ -56,4 +56,3 @@ jobs:
                 push: true
                 tags: |
                   dmsn/minicrm:dev
-                  dmsn/minicrm:dev-${{ github.sha::7 }}
