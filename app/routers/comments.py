@@ -22,7 +22,7 @@ comment_crud = CRUDComment()
 
 
 @comment_router.get(
-    "", response_model=list[CommentReadSchema], summary="Получить комментарии сдделки"
+    "", response_model=list[CommentReadSchema], summary="Получить комментарии сделки"
 )
 async def get_comments_deal(
     deal_id: int,
@@ -54,7 +54,7 @@ async def create_comment(
 @comment_router.patch(
     "/{comment_id}",
     response_model=CommentReadSchema,
-    summary="Измеенеение ккомментария",
+    summary="Изменение ккомментария",
 )
 async def update_comment(
     deal_id: int,
@@ -74,7 +74,7 @@ async def update_comment(
 
 @comment_router.delete(
     "/{comment_id}",
-    summary="Удаление ккомментария",
+    summary="Удаление комментария",
     description="Доступно только администратору",
 )
 async def delete_commennt(
