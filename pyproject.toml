@@ -1,0 +1,19 @@
+[tool.black]
+line-length = 90
+target-version = ['py311']
+extend-exclude = '''
+(
+  \.venv
+  | venv
+  | build
+  | dist
+  | alembic
+)
+'''
+[tool.isort]
+profile = "black"
+line_length = 90
+multi_line_output = 3
+skip_gitignore = true
+skip_glob = ["**/alembic/*"]
+src_paths = ["app"]
